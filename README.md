@@ -1,54 +1,62 @@
 # Agent Framework with Ollama
 
-Start by creating a new project and adding the appropriate dependencies.
+A quick start guide for building AI agents using Microsoft's Agent Framework with Ollama as the local LLM provider.
+
+## Prerequisites
+
+- [Python 3.11+](https://www.python.org/downloads/)
+- [uv](https://docs.astral.sh/uv/) for Python package management
+- [Ollama](https://ollama.ai/) installed and running locally
+
+## Quick Start
+
+### 1. Set up Ollama
+
+First, make sure Ollama is running and pull a model:
 
 ```sh
-mkdir agent-framework-with-ollama
-cd agent-framework-with-ollama
-uv init
-uv add agent-framework --prerelease=allow
+# Pull a model (this example uses gpt-oss:20b, but you can use any model)
+ollama pull gpt-oss:20b
+
+# Verify it's available
+ollama list
 ```
 
-Open the pyproject.toml file and make sure this is included at the bottom of the file
-
-```toml
-[tool.uv]
-prerelease = "allow"
-```
-
-Remove the uv.lock file if you have one
+### 2. Create your project
 
 ```sh
-rm -f uv.lock
-```
+# Clone this repository or create a new project
+git clone https://github.com/pauldotyu/agent-framework-quickstart-with-ollama.git
+cd agent-framework-quickstart-with-ollama
 
-Sync the dependencies
-
-```sh
+# Install dependencies
 uv sync
 ```
 
-Run the project
+### 3. Run your first agent
 
 ```sh
 uv run main.py
 ```
 
-## Running a basic agent sample
+That's it! Your agent will tell you a pirate joke using your local Ollama model.
 
-Reference: https://learn.microsoft.com/agent-framework/tutorials/quick-start?pivots=programming-language-python
+## What's in the code
 
-Add this to main.py
+The `main.py` file contains a simple agent example:
 
 ```python
 import asyncio
 from agent_framework import ChatAgent
+from agent_framework.observability import setup_observability
 from agent_framework.openai import OpenAIChatClient
+
+setup_observability()
 
 async def main():
     async with (
         ChatAgent(
-            chat_client=OpenAIChatClient(base_url="http://localhost:11434/v1", model_id="gpt-oss:20b", api_key="none"),
+            chat_client=OpenAIChatClient(),
             instructions="You are good at telling jokes."
         ) as agent,
     ):
@@ -59,10 +67,67 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Reference: https://github.com/microsoft/agent-framework/blob/main/python/packages/core/agent_framework/openai/_chat_client.py
+The agent automatically connects to your local Ollama instance thanks to the environment configuration in the `.env` file.
 
-Run the project
+## Environment Configuration
+
+The project includes a `.env` file that configures everything for you:
+
+```properties
+# Ollama Configuration
+OPENAI_BASE_URL=http://localhost:11434/v1
+OPENAI_CHAT_MODEL_ID=gpt-oss:20b
+OPENAI_API_KEY=none
+
+# OpenTelemetry (for monitoring - optional)
+ENABLE_OTEL=true
+ENABLE_SENSITIVE_DATA=true
+OTLP_ENDPOINT=http://localhost:4317
+```
+
+- **OPENAI_BASE_URL**: Points to Ollama's OpenAI-compatible API
+- **OPENAI_CHAT_MODEL_ID**: The model you want to use (change this to match your pulled model)
+- **OPENAI_API_KEY**: Set to "none" for Ollama (required by the OpenAI client)
+
+## Optional: Observability with OpenTelemetry
+
+Want to see what's happening under the hood? You can enable observability to monitor your agent's performance.
+
+### Start the monitoring
 
 ```sh
+# Start the OpenTelemetry collector
+docker compose up -d
+
+# Run your agent (observability is already enabled in .env)
 uv run main.py
+
+# View real-time telemetry data
+docker logs otel-collector -f
 ```
+
+### Stop monitoring
+
+```sh
+docker compose down
+```
+
+The telemetry shows you:
+
+- **Traces**: How your agent processes requests
+- **Metrics**: Token usage and performance data
+- **Logs**: Debug information and agent activities
+
+## Using Different Models
+
+To use a different Ollama model:
+
+1. Pull the model: `ollama pull model-name`
+2. Update `OPENAI_CHAT_MODEL_ID` in your `.env` file
+3. Run your agent: `uv run main.py`
+
+## Next Steps
+
+- Check out the [Agent Framework documentation](https://learn.microsoft.com/agent-framework/tutorials/quick-start?pivots=programming-language-python)
+- Explore the [OpenAI chat client source](https://github.com/microsoft/agent-framework/blob/main/python/packages/core/agent_framework/openai/_chat_client.py)
+- Modify `main.py` to create your own custom agents
