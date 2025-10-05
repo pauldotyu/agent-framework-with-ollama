@@ -5,9 +5,7 @@ from agent_framework.openai import OpenAIChatClient
 async def main():
     async with (
         ChatAgent(
-            chat_client=OpenAIChatClient(base_url="http://localhost:11434/v1", 
-                                         model_id="gpt-oss:20b", 
-                                         api_key="none"),
+            chat_client=OpenAIChatClient(base_url="http://localhost:11434/v1", model_id="qwen3:30b-a3b", api_key="none"),
             instructions="You are good at telling jokes."
         ) as agent,
     ):
