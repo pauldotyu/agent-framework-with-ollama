@@ -4,7 +4,7 @@ from agent_framework import ChatAgent
 from agent_framework.observability import setup_observability
 from agent_framework.openai import OpenAIChatClient
 
-setup_observability()
+# setup_observability(enable_sensitive_data=True)
 
 
 async def main():
