@@ -120,6 +120,21 @@ The telemetry shows you:
 - **Metrics**: Token usage and performance data
 - **Logs**: Debug information and agent activities
 
+### Check stored chat messages
+
+If you're using Redis for chat history storage, you can view the stored messages:
+
+```sh
+# See all conversation threads
+docker exec redis redis-cli keys "*"
+
+# View messages in a specific thread (replace with actual key from above)
+docker exec redis redis-cli lrange "chat_messages:thread_<thread-id>" 0 -1
+
+# Count total conversations
+docker exec redis redis-cli dbsize
+```
+
 ## Using Different Models
 
 To use a different Ollama model:
