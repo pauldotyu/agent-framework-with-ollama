@@ -89,14 +89,16 @@ OTLP_ENDPOINT=http://localhost:4317
 - **OPENAI_CHAT_MODEL_ID**: The model you want to use (change this to match your pulled model)
 - **OPENAI_API_KEY**: Set to "none" for Ollama (required by the OpenAI client)
 
-## Optional: Observability with OpenTelemetry
+## Optional: Observability with OpenTelemetry and chat history storage with Redis
 
 Want to see what's happening under the hood? You can enable observability to monitor your agent's performance.
+
+The docker compose setup also includes Redis for chat history storage if needed.
 
 ### Start the monitoring
 
 ```sh
-# Start the OpenTelemetry collector
+# Start the OpenTelemetry collector and Redis
 docker compose up -d
 
 # Run your agent (observability is already enabled in .env)

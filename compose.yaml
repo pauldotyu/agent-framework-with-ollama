@@ -24,3 +24,30 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  redis:
+    image: redis:8.2.2-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    mem_limit: 512m
+    mem_reservation: 256m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    sysctls:
+      net.core.somaxconn: 1024
+
+volumes:
+  redis_data:
+    driver: local
