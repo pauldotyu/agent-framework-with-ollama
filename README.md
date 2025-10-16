@@ -1,6 +1,6 @@
-# Agent Framework with Ollama
+# Agent Framework with local LLMs
 
-A quick start guide for building AI agents using Microsoft's Agent Framework with Ollama as the local LLM provider.
+A quick start guide for building AI agents using Microsoft's Agent Framework with local LLMs (e.g., Ollama or vLLM).
 
 ## Prerequisites
 
