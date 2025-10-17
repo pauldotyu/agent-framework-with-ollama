@@ -4,7 +4,7 @@ from agent_framework import ChatAgent
 from agent_framework.observability import setup_observability
 from agent_framework.openai import OpenAIChatClient
 
-# setup_observability(enable_sensitive_data=True)
+setup_observability(enable_sensitive_data=True)
 
 
 async def main():
@@ -15,7 +15,7 @@ async def main():
             instructions="You are good at telling jokes.",
         ) as agent,
     ):
-        result = await agent.run("Tell me a joke about a pirate.")
+        result = await agent.run("Tell me a dad joke about programming.")
         print(result.text)
 
 
